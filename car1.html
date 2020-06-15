@@ -1,0 +1,214 @@
+<html>
+    <head>
+        <title>2D Car Game</title>
+        <link rel="stylesheet" href="car2.css" />
+    </head>
+  
+    <div class="cargame">
+        <div class="score"></div>
+        <div class="startscreen  "><p>Click To Start<br> Use Arrow Keys</p></div>
+        <div class="gamearea ">
+       
+        </div>
+
+    </div>
+  
+    <script>
+         
+         const startscreen=document.querySelector('.startscreen');
+         const score=document.querySelector('.score');
+         const gamearea=document.querySelector('.gamearea');
+         let keys={ ArrowUp:false,ArrowDown:false,ArrowLeft:false,ArrowRight:false}
+         startscreen.addEventListener('click',start);
+         document.addEventListener('keydown',down);
+         document.addEventListener('keyup',up);
+         var player={};
+         function down(e)
+         {   
+           e.preventDefault();
+           keys[e.key]=true;
+           console.log(keys);
+         }
+         function up(e)
+         {  
+          e.preventDefault();
+          keys[e.key]=false;
+          console.log(keys);
+   
+         }
+         function start()
+         {   player.start=true;
+             player.score=0;
+              //  gamearea.classList.remove('hide');
+              gamearea.innerHTML=" ";
+             startscreen.classList.add('hide');
+             
+             for(var i=0;i<=6;i++)
+             {
+             let roadline=document.createElement('div');
+             roadline.setAttribute('class','line');
+             roadline.style.top=i*150+10;
+             roadline.y=i*180+10;
+             gamearea.appendChild(roadline);
+
+             }
+            
+
+             for(var i=0;i<=3;i++)
+             {
+             let enemycar=document.createElement('div');
+             enemycar.setAttribute('class','enemy');
+             enemycar.style.top=(i+1)*200+80;
+             enemycar.style.left=Math.floor(Math.random()*300+50);
+             enemycar.y=(i+1)*350-10;
+             enemycar.style.backgroundColor='#'+Math.floor(Math.random()*999999+111111);
+             gamearea.appendChild(enemycar);
+
+             }
+
+
+             let car=document.createElement('div');
+             car.setAttribute('class','car');
+             gamearea.appendChild(car);
+             player.x=car.offsetLeft;
+             player.y=car.offsetTop;
+             //console.log(player.x);
+            // console.log(player.y);
+             window.requestAnimationFrame(gameplay);
+     
+             
+         }
+        function gameplay()
+        {    
+             let car=document.querySelector('.car');
+             let position=gamearea.getBoundingClientRect();
+             if(player.start)
+             {
+             movecar(car);
+             moveline2();
+             if(keys.ArrowUp)
+             {   moveline()
+                 player.y-=5;
+             }
+             if(keys.ArrowDown)
+             {  moveline1()
+                 player.y+=5;
+             }
+             if(keys.ArrowLeft)
+             { // moveline()
+                 player.x-=5;
+             }
+             if(keys.ArrowRight)
+             {   //moveline()
+                 player.x+=5;
+             }
+             if( player.y>=150 &&player.y<=(position.bottom-60) )
+             {
+                 car.style.top=player.y;
+             }
+             console.log(position.bottom);
+             if( player.x>=0 && player.x<=350)
+             {
+                 car.style.left=player.x;
+             }
+             window.requestAnimationFrame(gameplay);
+             console.log(player.score++);
+             player.score++;
+             score.innerText=player.score;
+             score.innerText="Score :"+player.score;
+             }
+            
+            
+        }
+         function moveline()
+         {
+            let lines=document.querySelectorAll('.line');
+            lines.forEach(function(item)
+            {   //console.log("sdass");
+                if(item.y>900)
+                {
+                    item.y=0;
+                }
+                item.y+=5;
+                item.style.top=item.y;
+               
+            })
+            //console.log("sdas");
+         } 
+
+         function moveline1()
+         {
+            let lines=document.querySelectorAll('.line');
+            lines.forEach(function(item)
+            {   //console.log("sdass");
+                if(item.y<0)
+                {
+                    item.y=900;
+                }
+                item.y-=5;
+                item.style.top=item.y;
+               
+            })
+            //console.log("sdas");
+         } 
+         function moveline2()
+         {
+            let lines=document.querySelectorAll('.line');
+            lines.forEach(function(item)
+            {   //console.log("sdass");
+                if(item.y>900)
+                {
+                    item.y=0;
+                }
+                item.y+=3;
+                item.style.top=item.y;
+               
+            })
+            //console.log("sdas");
+         } 
+
+
+         function movecar(car)
+         {
+            let lines=document.querySelectorAll('.enemy');
+           
+            lines.forEach(function(item)
+            {  
+                if(iscollide(car,item))
+               
+            {
+                endgame();
+                console.log("hit");
+            }
+            
+                 //console.log("sdass");
+                if(item.y>900)
+                {
+                    item.y=0;
+                }
+                item.y+=5;
+                item.style.top=item.y;
+               
+            })
+            //console.log("sdas");
+         } 
+         function iscollide(a,b)
+         {
+           areact=a.getBoundingClientRect();
+           breact=b.getBoundingClientRect();
+           return ! (areact.top>breact.bottom ||areact.left>breact.right||
+                 areact.right<breact.left||areact.bottom<breact.top
+                  )
+
+
+         }
+         function endgame()
+         {
+            player.start=false;
+            startscreen.classList.remove('hide');
+         }
+
+    </script>
+
+
+</html>
